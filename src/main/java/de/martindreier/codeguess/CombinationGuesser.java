@@ -26,9 +26,19 @@ public class CombinationGuesser {
 	}
 	
 	public Collection<List<Integer>> guess(Collection<Hint> hints) {
-		
+		checkHintLength(hints);
 		Collection<List<Integer>> guesses = new SearchSpace(hints).determine(resultSize);
 		return limitGuessesByHints(guesses, hints);
+	}
+
+	private void checkHintLength(Collection<Hint> hints) {
+		for (Hint hint: hints)
+		{
+			if (hint.numbers().size() != resultSize)
+			{
+				throw new IllegalArgumentException(String.format("Hint \"%s\" does not have the correct length (%d)", hint, resultSize));
+			}
+		}
 	}
 
 	/**

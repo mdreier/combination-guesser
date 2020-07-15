@@ -13,6 +13,21 @@ import java.util.List;
  *
  */
 public record Hint(List<Integer> numbers, int correctDigits, int digitsInCorrectLocation) {
+	
+	public Hint {
+		if (numbers == null) {
+			throw new IllegalArgumentException("Numbers must not be null");
+		}
+		if (correctDigits < 0 || correctDigits > numbers.size())
+		{
+			throw new IllegalArgumentException(String.format("correctDigits must be between 0 and %s", numbers.size()));
+		}
+		if (digitsInCorrectLocation < 0 || digitsInCorrectLocation > numbers.size())
+		{
+			throw new IllegalArgumentException(String.format("digitsInCorrectLocation must be between 0 and %s", numbers.size()));
+		}
+	}
+	
 	@Override
 	public String toString() {
 		List<String> elements = new ArrayList<>(numbers().size());
