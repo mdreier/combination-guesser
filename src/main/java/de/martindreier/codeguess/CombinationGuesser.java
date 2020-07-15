@@ -27,7 +27,7 @@ public class CombinationGuesser {
 	
 	public Collection<List<Integer>> guess(Collection<Hint> hints) {
 		
-		Collection<List<Integer>> guesses = new SearchSpace(resultSize, hints).determine();
+		Collection<List<Integer>> guesses = new SearchSpace(hints).determine(resultSize);
 		return limitGuessesByHints(guesses, hints);
 	}
 

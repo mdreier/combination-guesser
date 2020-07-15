@@ -3,34 +3,46 @@
  */
 package de.martindreier.codeguess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.paukov.combinatorics3.Generator;
-
 /**
  * Determine the initial search space.
+ * This class is not thread safe.
  * 
  * @author D043987
  *
  */
 public class SearchSpace {
 	private Collection<Hint> hints;
-	private int resultSize;
+	private List<Set<Integer>> positionalSearchSpace;
 
-	public SearchSpace(int resultSize, Collection<Hint> hints) {
-		this.resultSize = resultSize;
+	public SearchSpace(Collection<Hint> hints) {
 		this.hints = hints;
 	}
 	
-	public Set<List<Integer>> determine() {
-		Set<Integer> searchSpace = new HashSet<>(Set.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
-		removeAllIncorrects(searchSpace);
-		return allPossibleCombinations(searchSpace);
+	public Set<List<Integer>> determine(int resultSize) {
+		if (positionalSearchSpace == null)
+		{
+			Set<Integer> globalSearchSpace = determineGlobalSearchSpace();
+			positionalSearchSpace = new ArrayList<Set<Integer>>(resultSize);
+			for (int index = 0; index < resultSize; index++)
+			{
+				positionalSearchSpace.add(new HashSet<>(globalSearchSpace));
+			}
+		}
+		return new Permutation(positionalSearchSpace).getAllCombinations();
 	}
 	
+	private Set<Integer> determineGlobalSearchSpace() {
+		Set<Integer> globalSearchSpace = new HashSet<>(Set.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+		removeAllIncorrects(globalSearchSpace);
+		return globalSearchSpace;
+	}
+
 	/**
 	 * Remove all numbers from hints where all digits are incorrect
 	 * @param searchSpace
@@ -42,16 +54,5 @@ public class SearchSpace {
 				searchSpace.removeAll(hint.numbers());
 			}
 		});
-	}
-	
-	private Set<List<Integer>> allPossibleCombinations(Set<Integer> searchSpace) {
-		Set<List<Integer>> possibleSolutions = new HashSet<>();
-		
-		//Generate all possible combinations in the result size
-		Generator.combination(searchSpace).multi(resultSize).stream()
-		//and all permutations thereof
-		.forEach(combo -> Generator.permutation(combo).simple().forEach(possibleSolutions::add));
-		
-		return possibleSolutions;
 	}
 }
