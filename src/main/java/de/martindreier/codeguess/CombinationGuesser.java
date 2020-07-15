@@ -5,7 +5,6 @@ package de.martindreier.codeguess;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,11 +27,17 @@ public class CombinationGuesser {
 	
 	public Collection<List<Integer>> guess(Collection<Hint> hints) {
 		
-		Set<List<Integer>> guesses = new SearchSpace(resultSize, hints).determine();
+		Collection<List<Integer>> guesses = new SearchSpace(resultSize, hints).determine();
 		return limitGuessesByHints(guesses, hints);
 	}
 
-	private Collection<List<Integer>> limitGuessesByHints(Set<List<Integer>> guesses, Collection<Hint> hints) {
+	/**
+	 * Brute force approach: Remove all guesses which are not allowed by hints.
+	 * @param guesses The guesses.
+	 * @param hints The hints.
+	 * @return Filtered guesses.
+	 */
+	private Collection<List<Integer>> limitGuessesByHints(Collection<List<Integer>> guesses, Collection<Hint> hints) {
 		Stream<List<Integer>> filtered = guesses.parallelStream();
 		for (Hint hint: hints)
 		{

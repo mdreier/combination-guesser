@@ -23,6 +23,12 @@ public abstract class PuzzleBase {
 	protected abstract Set<List<Integer>> createSolutions();
 	protected abstract int getResultSize();
 	
+	/**
+	 * Output to console.
+	 * @param hints Given hints.
+	 * @param solutions Solutions by guesser.
+	 * @param durationInNanoseconds Runtime in nanoseconds.
+	 */
 	protected void print(Collection<Hint> hints, Collection<List<Integer>> solutions, long durationInNanoseconds) {
 		System.out.println(this.getClass().getSimpleName());
 		System.out.println("Hints:");
